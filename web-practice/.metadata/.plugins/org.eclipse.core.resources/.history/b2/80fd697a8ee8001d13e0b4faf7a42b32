@@ -1,0 +1,14 @@
+package todo.domain;
+
+public class RequestDTO {
+	private String todo;
+	private String duedate;
+	
+	public RequestTodo(){}
+	
+	public RequestDTO(String todo, String duedate) {
+		this.todo = todo;
+		this.duedate = duedate;
+	}
+	
+}

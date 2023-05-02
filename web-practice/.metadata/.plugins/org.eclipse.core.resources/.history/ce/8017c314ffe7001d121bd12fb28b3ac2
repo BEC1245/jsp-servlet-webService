@@ -1,0 +1,58 @@
+package todo.domain;
+
+// java beans 형식으로 정의함
+// db테이블의 컬럼과 변수 이름을 동일시 할 것
+public class TodoDTO {
+	private int tno;
+	private String todo;
+	private String duedate;
+	private boolean finished;
+	
+	public TodoDTO(){}
+	
+	public TodoDTO(int tno, String todo, String duedate, boolean finished) {
+		this.tno = tno;
+		this.todo = todo;
+		this.duedate = duedate;
+		this.finished = finished;
+	}
+
+	@Override
+	public String toString() {
+		return "TodoDTO [tno=" + tno + ", todo=" + todo + ", duedate=" + duedate + ", finished=" + finished + "]";
+	}
+	
+	// Getter / Setter
+
+	public int getTno() {
+		return tno;
+	}
+
+	public void setTno(int tno) {
+		this.tno = tno;
+	}
+
+	public String getTodo() {
+		return todo;
+	}
+
+	public void setTodo(String todo) {
+		this.todo = todo;
+	}
+
+	public String getDuedate() {
+		return duedate;
+	}
+
+	public void setDuedate(String duedate) {
+		this.duedate = duedate;
+	}
+
+	public boolean isFinished() {
+		return finished;
+	}
+
+	public void setFinished(boolean finished) {
+		this.finished = finished;
+	}
+}

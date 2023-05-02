@@ -1,0 +1,28 @@
+package todo.service;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+
+import todo.dao.TodoDAO;
+import todo.domain.TodoDTO;
+
+public class TodoListService {
+	TodoDAO dao;
+	
+	public TodoListService() {
+		dao = TodoDAO.getInstance();
+	}
+	
+	public List<TodoDTO> getList(){
+		Connection conn = null;
+		
+		try {
+			conn = G
+			
+		} catch (SQLException e) {
+			// TODO: handle exception
+		}
+		
+	}
+}

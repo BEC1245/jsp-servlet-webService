@@ -1,0 +1,80 @@
+package todo.controller;
+
+import java.io.IOException;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import todo.domain.Todo;
+import todo.domain.TodoDTO;
+import todo.service.TodoUpdateService;
+import todo.service.TodoViewService;
+
+@WebServlet("/todo/modify")
+public class TodoModifyController extends HttpServlet {
+
+	TodoViewService viewService;
+	TodoUpdateService updateService;
+	
+	public TodoModifyController() {
+		this.viewService = TodoViewService.getInstance();
+		this.updateService = TodoUpdateService.getInstance();
+	}
+	
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setCharacterEncoding("utf-8");
+		request.setCharacterEncoding("utf-8");
+		
+		// 수정 폼 : 이전에 입력했던 데이터가 출력이 되야함
+		// no 값을 받고
+		String noStr = request.getParameter("no");
+		int no = Integer.parseInt(noStr);
+		
+		// no에 해당하는 Todo 데이터를 Service를 통해서 받고
+		TodoDTO todo = viewService.getTodo(no);
+		
+		// request 속성에 결과 데이터를 저장
+		request.setAttribute("todo", todo);
+		
+		// view 지정
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/todo/mordify.jsp");
+		
+		// forword
+		dispatcher.forward(request, response);
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		System.out.println("TodoModifyController...doPost()...");
+		
+		response.setCharacterEncoding("utf-8");
+		request.setCharacterEncoding("utf-8");
+		
+		// 수정 폼에서 전달받고 
+		String noStr = request.getParameter("no");
+		String todo = request.getParameter("todo");
+		String duedate = request.getParameter("duedate");
+		String complete = request.getParameter("complete");		
+	
+		// 데이터를 Service에 요청하고 : update
+		System.out.println(noStr + " / " + todo + " / " + duedate + " / " + complete);
+		TodoDTO todoDTO = new TodoDTO(Integer.parseInt(noStr), todo, duedate, complete != null ? (complete.equals("on") ? true : false) : false);
+		
+		// 결과 받고
+		int result = updateService.modify(todoDTO);
+		
+		if(result > 0) {
+			System.out.println("수정완료...");
+		} else {
+			System.out.println("수정실패");
+		}
+		
+		// redirect 처리 어디로? -> list.jsp
+		response.sendRedirect("list");
+	}
+
+}

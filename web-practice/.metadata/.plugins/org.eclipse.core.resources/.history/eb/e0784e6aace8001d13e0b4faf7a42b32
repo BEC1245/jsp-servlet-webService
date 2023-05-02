@@ -1,0 +1,155 @@
+package todo.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import todo.domain.RequestTodo;
+import todo.domain.TodoDTO;
+import todo.util.ConnectionProvider;
+import todo.util.closestatement;
+
+public class TodoDAO {
+	
+	// 자신의 클래스에 인스턴스를 생성
+	public static TodoDAO instanse;
+	
+	// 생성장 private 처리
+	private TodoDAO() {}
+	
+	// 인스턴스를 가져올 수 있는 메서드 구현
+	public static TodoDAO getInstance() {
+		if(instanse == null) {
+			instanse = new TodoDAO();
+		}
+		return instanse;
+	}
+	
+	// TodoDTO 리스트를 반환하는 메서드
+	public List<TodoDTO> getTodoDTO(Connection conn) {
+		PreparedStatement pstmt = null;
+		List<TodoDTO> result = null;
+		ResultSet rs = null;
+		
+		try {
+			String sql = "select * from tbl_todo";
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			result = new ArrayList<TodoDTO>();
+			
+			while(rs.next()) {
+				int tno =rs.getInt("tno");
+				String todo =rs.getString("todo");
+				String duedate =rs.getString("duedate");
+				Boolean finish = rs.getBoolean("finished");
+				
+				result.add(new TodoDTO(tno, todo, duedate, finish));
+			}
+			
+		} catch(SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(rs != null) {
+					rs.close();
+				}
+				if(pstmt != null) {
+					pstmt.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return result;
+	}
+	
+	// tno 값을 받아서 해당 Todo 정보 를 방환하는 메소드
+	public TodoDTO selectByTno (Connection conn, int tno){
+		PreparedStatement pstmt = null;
+		TodoDTO result = null;
+		ResultSet rs = null;
+		
+		try {
+			String sql = "select * from tbl_todo where tno = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, tno);
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				result = new TodoDTO(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getBoolean(4));
+			}
+		} catch(SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closestatement.close(pstmt, rs);
+		}
+		
+		return result;
+	}
+	
+	public int insertTodo(Connection conn, RequestTodo todo) {
+		PreparedStatement pstmt = null;
+		int result = 0;
+		
+		// insert sql
+		String sql = "Insert into tbl_todo (todo, duedate) values (?, ?)";
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, todo.getTodo());
+			pstmt.setString(2, todo.getDuedate());
+			
+			result = pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			
+			try {
+				if(pstmt != null) {
+					pstmt.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+		}
+		return result;
+	}
+	
+	public int updateByTno (Connection conn, TodoDTO todo){
+		PreparedStatement pstmt = null;
+		int result ;
+		
+		try {
+			String sql = "update tbl_todo set todo =?, duedate = ?, finished =? where tno = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, todo.getTodo());
+			pstmt.setString(2, todo.getDuedate());
+			pstmt.setBoolean(3, todo.isFinished());
+			pstmt.setInt(4, todo.getTno());
+			
+			result = pstmt.executeUpdate();
+			
+		} catch(SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closestatement.close(pstmt);
+		}
+		
+		return result;
+	}
+	
+	public static void main(String[] args) throws SQLException {
+		TodoDAO dao = TodoDAO.getInstance();
+		Connection conn = ConnectionProvider.get();
+		
+		dao.updateByTno(conn, new TodoDTO(2, "커피 솟기", "2023-05-03", true));
+		System.out.println("수정 완료");
+	}
+}

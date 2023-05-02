@@ -1,0 +1,15 @@
+package todo.dao;
+
+public class TodoDAO {
+	public static TodoDAO instanse;
+	
+	private TodoDAO() {}
+	
+	public static TodoDAO getInstance() {
+		if(instanse == null) {
+			instanse = new TodoDAO();
+		}
+		return instanse;
+	}
+	
+}

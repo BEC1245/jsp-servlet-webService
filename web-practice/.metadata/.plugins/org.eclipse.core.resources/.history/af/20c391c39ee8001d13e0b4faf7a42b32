@@ -1,0 +1,33 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+    pageEncoding="EUC-KR"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="EUC-KR">
+<title>Insert title here</title>
+</head>
+
+<body>
+	<h1>Todo 상세보기</h1>
+
+		${todo}
+
+		번호 : <input type="text" name="no" value="${todo.tno}" readonly> <br>
+		할일 : <input type="text" name="todo" value="${todo.todo}" readonly> <br>
+		날짜 : <input type="date" name="duedate" value="${todo.duedate}" readonly> <br>
+		완료 : <input type="checkbox" name="complete" ${todo.finished == 'done' ? 'checked' : ''}> <br>
+		<!-- checkbox value는 => "on" 아니면 "off"로 들어옴 -->
+		
+		<!-- 해당 todo를 수절 혹은 삭제하는 버튼들 -> 서블릿으로 보냄 -->
+		<!-- a 태그는 get 방식을 취함 -->
+		<a href="modify?no=${todo.tno}">수정</a> 
+		
+		<%-- <a href="modify?no=${no}">수정</a> <a href="#">삭제</a>--%>
+		<form action="delete" method="post">
+			<input type="text" name="no" value="${todo.tno}">
+			<input type ="submit" value="삭제">
+		</form>
+		
+</body>
+
+</html>

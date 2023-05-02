@@ -1,0 +1,22 @@
+package todo.service;
+
+import todo.dao.TodoDAO;
+import todo.domain.TodoDTO;
+
+public class TodoSelectService {
+	
+	TodoDAO dao;
+	
+	private TodoSelectService(){
+		this.dao = TodoDAO.getInstance();
+	}
+	
+	private static TodoSelectService service = new TodoSelectService();
+	
+	public static TodoSelectService getInstance() {
+		return service;
+	}
+	
+	// logic
+	p
+}

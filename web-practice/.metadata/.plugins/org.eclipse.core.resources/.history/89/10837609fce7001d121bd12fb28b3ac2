@@ -1,0 +1,5 @@
+package todo.domain;
+
+public class TodoDTO {
+
+}
